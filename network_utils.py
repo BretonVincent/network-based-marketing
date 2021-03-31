@@ -59,13 +59,21 @@ def fetch_papers(request):
         author = None
     return papers, author
 
-def fetch_author_from_paper(id):
+def fetch_author_and_title_from_paper(id):
     papers = fetch_details(id)
-    len_authors = len(papers['PubmedArticle'][0]['MedlineCitation']['Article']['AuthorList'])
+    title = papers['PubmedArticle'][0]['MedlineCitation']['Article']['ArticleTitle']
+    try:
+        len_authors = len(papers['PubmedArticle'][0]['MedlineCitation']['Article']['AuthorList'])
+    except:
+        len_authors = 1
     authors = []
     for aut in range(len_authors):
-        lastName = papers['PubmedArticle'][0]['MedlineCitation']['Article']['AuthorList'][aut]['LastName']
-        foreName = papers['PubmedArticle'][0]['MedlineCitation']['Article']['AuthorList'][aut]['ForeName']
+        try:
+            lastName = papers['PubmedArticle'][0]['MedlineCitation']['Article']['AuthorList'][aut]['LastName']
+            foreName = papers['PubmedArticle'][0]['MedlineCitation']['Article']['AuthorList'][aut]['ForeName']
+        except:
+            lastName = ''
+            foreName = ''
         author = foreName + ' ' + lastName
         authors.append(author)
-    return authors
+    return authors, title
